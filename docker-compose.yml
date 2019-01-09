@@ -9,12 +9,12 @@ services:
     environment:
       KAFKA_CREATE_TOPICS: "topcoder-x:1:1"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://localhost:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
     ports:
       - 9092:9092
-      - 9093:9093
       - 9094:9094
     depends_on:
       - zookeeper
@@ -22,18 +22,18 @@ services:
     image: amazon/dynamodb-local
     ports:
       - 8000:8000
-  ui:
-    build: ./
-    ports:
-      - 8080:8080
-    environment:
-      KAFKA_HOST: kafka:9092
-      TOPIC: topcoder-x
-      PORT: 8080
-      AWS_ACCESS_KEY_ID: AKIAJSCCCPO6EUIRH4KA
-      AWS_SECRET_ACCESS_KEY: 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
-      AWS_REGION: us-west-2
-      IS_LOCAL: "true"
-    depends_on:
-      - kafka
-      - dynamo
+        #   ui:
+        #     build: ./
+        #     ports:
+        #       - 8080:8080
+        #     environment:
+        #       KAFKA_HOST: kafka:9092
+        #       TOPIC: topcoder-x
+        #       PORT: 8080
+        #       AWS_ACCESS_KEY_ID: AKIAJSCCCPO6EUIRH4KA
+        #       AWS_SECRET_ACCESS_KEY: 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
+        #       AWS_REGION: us-west-2
+        #       IS_LOCAL: "true"
+        #     depends_on:
+        #       - kafka
+        #       - dynamo

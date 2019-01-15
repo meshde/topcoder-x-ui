@@ -149,7 +149,9 @@ async function addUserToTeamCallback(req, res) {
     .end();
   const token = result.body.access_token;
   // add user to team
-  const githubUser = await GithubService.addTeamMember(team.teamId, team.ownerToken, token);
+  const {user: githubUser, state} = await GithubService.addTeamMember(
+    team.teamId, team.ownerToken, token
+  );
   // associate github username with TC username
   const mapping = await dbHelper.scanOne(UserMapping, {
     topcoderUsername: {eq: req.session.tcUsername},
@@ -169,11 +171,14 @@ async function addUserToTeamCallback(req, res) {
     });
   }
 
-  let url = `${constants.USER_ADDED_TO_TEAM_SUCCESS_URL}/github`;
-  // TODO: change githubUser to something else
-  if (githubUser.state === 'pending') {
-    const org = await GithubService.getOrgFromTeamId(team.teamId, team.ownerToken);
-    url = `${url}/${org}`;
+  let url;
+  if (state === 'pending') {
+    const org = await GithubService.getOrgFromTeamId(
+      team.teamId, team.ownerToken
+    );
+    url = `${constants.USER_ADDED_TO_TEAM_PENDING_URL}/github/${org}`;
+  } else {
+    url = `${constants.USER_ADDED_TO_TEAM_SUCCESS_URL}/github`;
   }
   // redirect to success page
   res.redirect(url);

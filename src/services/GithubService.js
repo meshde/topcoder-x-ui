@@ -227,15 +227,26 @@ addTeamMember.schema = Joi.object().keys({
  * @returns {number} the user id
  */
 async function getOrgFromTeamId(teamId, ownerUserToken) {
-  const github = new GitHub({
-    token: ownerUserToken,
-  });
-  // TODO: try-catch
-  const team = github.getTeam(teamId);
-  const teamInfo = await team.getTeam();
-  const org = teamInfo.data.organization.login;
-  return org;
+  try {
+    const github = new GitHub({
+      token: ownerUserToken,
+    });
+    const team = github.getTeam(teamId);
+    const teamInfo = await team.getTeam();
+    if (!teamInfo || !teamInfo.data) {
+      throw new Error(`The team with teamId ${teamId} is not found on github`);
+    }
+    const org = teamInfo.data.organization.login;
+    return org;
+  } catch (err) {
+    throw helper.convertGitHubError(err, 'Failed to get detail about team from github');
+  }
 }
+
+getOrgFromTeamId.schema = Joi.object().keys({
+  teamId: Joi.string().required(),
+  ownerUserToken: Joi.string().required(),
+});
 
 /**
  * Gets the user id by username

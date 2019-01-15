@@ -129,9 +129,21 @@ angular.module('topcoderX', [
           controllerAs: 'vm',
           resolve: { auth: authenticate }
         })
-        .state('membersAdded', {
-          url: '/members/:provider',
+        .state('members', {
+          url: '/members',
           templateUrl: 'app/members/member.html',
+          controller: 'MemberController',
+          controllerAs: 'vm',
+        })
+        .state('members.success', {
+          url: '/success/:provider',
+          templateUrl: 'app/members/member.success.html',
+          controller: 'MemberController',
+          controllerAs: 'vm',
+        })
+        .state('members.pending', {
+          url: '/pending/:provider/:org',
+          templateUrl: 'app/members/member.pending.html',
           controller: 'MemberController',
           controllerAs: 'vm',
         })

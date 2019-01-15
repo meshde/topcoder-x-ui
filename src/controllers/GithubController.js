@@ -168,8 +168,15 @@ async function addUserToTeamCallback(req, res) {
       githubUserId: githubUser.id,
     });
   }
+
+  let url = `${constants.USER_ADDED_TO_TEAM_SUCCESS_URL}/github`;
+  // TODO: change githubUser to something else
+  if (githubUser.state === 'pending') {
+    const org = await GithubService.getOrgFromTeamId(team.teamId, team.ownerToken);
+    url = `${url}/${org}`;
+  }
   // redirect to success page
-  res.redirect(`${constants.USER_ADDED_TO_TEAM_SUCCESS_URL}/github`);
+  res.redirect(url);
 }
 
 module.exports = {

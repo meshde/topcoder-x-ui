@@ -183,6 +183,7 @@ getTeamRegistrationUrl.schema = Joi.object().keys({
 async function addTeamMember(teamId, ownerUserToken, normalUserToken) {
   let username;
   let id;
+  let state;
   try {
     // get normal user name
     const githubNormalUser = new GitHub({
@@ -197,7 +198,8 @@ async function addTeamMember(teamId, ownerUserToken, normalUserToken) {
       token: ownerUserToken,
     });
     const team = github.getTeam(teamId);
-    await team.addMembership(username);
+    const membership = await team.addMembership(username);
+    state = membership.data.state;
   } catch (err) {
     // if error is already exists discard
     if (_.chain(err).get('body.errors').countBy({
@@ -209,7 +211,7 @@ async function addTeamMember(teamId, ownerUserToken, normalUserToken) {
     }
   }
   // return github username
-  return {username, id};
+  return {username, id, state};
 }
 
 addTeamMember.schema = Joi.object().keys({
@@ -217,6 +219,23 @@ addTeamMember.schema = Joi.object().keys({
   ownerUserToken: Joi.string().required(),
   normalUserToken: Joi.string().required(),
 });
+
+/**
+ * Gets the user id by username
+ * @param {string} teamId the teamId
+ * @param {string} ownerUserToken the OAuth token for owner of team
+ * @returns {number} the user id
+ */
+async function getOrgFromTeamId(teamId, ownerUserToken) {
+  const github = new GitHub({
+    token: ownerUserToken,
+  });
+  // TODO: try-catch
+  const team = github.getTeam(teamId);
+  const teamInfo = await team.getTeam();
+  const org = teamInfo.data.organization.login;
+  return org;
+}
 
 /**
  * Gets the user id by username
@@ -245,6 +264,7 @@ module.exports = {
   listOwnerUserTeams,
   getTeamRegistrationUrl,
   addTeamMember,
+  getOrgFromTeamId,
   getUserIdByUsername,
 };
 

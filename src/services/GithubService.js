@@ -210,8 +210,8 @@ async function addTeamMember(teamId, ownerUserToken, normalUserToken) {
       throw helper.convertGitHubError(err, 'Failed to add team member');
     }
   }
-  // return github username
-  return {username, id, state};
+  // return github username and state of team registration
+  return {user: {username, id}, state};
 }
 
 addTeamMember.schema = Joi.object().keys({

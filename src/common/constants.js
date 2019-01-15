@@ -63,7 +63,8 @@ const GITHUB_OWNER_CALLBACK_URL = '/api/v1/github/owneruser/callback';
 const GITLAB_OWNER_CALLBACK_URL = '/api/v1/gitlab/owneruser/callback';
 
 const OWNER_USER_LOGIN_SUCCESS_URL = '/#/app/settings';
-const USER_ADDED_TO_TEAM_SUCCESS_URL = '/#/members';
+const USER_ADDED_TO_TEAM_SUCCESS_URL = '/#/members/success';
+const USER_ADDED_TO_TEAM_PENDING_URL = '/#/members/pending';
 
 const TC_LOGIN_CALLBACK_URL = '/api/v1/tclogin';
 const JWT_V3_NAME = 'v3jwt';
@@ -85,6 +86,7 @@ module.exports = {
   GITLAB_OWNER_CALLBACK_URL,
   OWNER_USER_LOGIN_SUCCESS_URL,
   USER_ADDED_TO_TEAM_SUCCESS_URL,
+  USER_ADDED_TO_TEAM_PENDING_URL,
   TC_LOGIN_CALLBACK_URL,
   JWT_V3_NAME,
 };
